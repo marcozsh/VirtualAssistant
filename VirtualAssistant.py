@@ -56,26 +56,26 @@ def setup_name(flag):
         set_name(name, flag)
         speakENGLISH('My name have been set, to call me you just need to say my name')
         speakENGLISH('My name is {}'.format(name))
-    
+
 
 # Ctrl+C
 signal.signal(signal.SIGINT, def_handler)
 
 name_exists = get_name()[1] # true if is not the first run
-WAKE = get_name()[0] if name_exists else ''
+WAKE_STATUS = True if name_exists else False
 
-print(WAKE)
 if __name__ == '__main__':
-    if WAKE == '': #if is the first run
+    if not WAKE_STATUS: #if is the first run
         speakENGLISH('Hi, I am your Virtual Assistant. First of all, I have to do some configurations.')
         speakENGLISH('This may take a few moments')
         print('Starting configurations')
         setup_name(True)
-        
+
     print('\n{}\n'.format(time_string))
     contador = 0
     while (True):
-        print("listening.......")
+        print("listening....... \n")
+        WAKE = get_name()[0]
         record = get_audioENGLISH()
         recorded_audio = str(record.count(WAKE)) if str(
             type(record)) == '<class \'list\'>' else record['alternative'][0]['transcript']
@@ -92,12 +92,13 @@ if __name__ == '__main__':
                     break
                 elif contador > 0:
                     speakENGLISH(get_phrases(2))
+                    break
                 else:
                     speakENGLISH("sorry, I can't understand you said")
                     break
             else:
                 break
-            
+
         while WAKE in recorded_audio and contador > 0:
             print("waiting orders.......")
             command = get_audioENGLISH()
@@ -111,10 +112,6 @@ if __name__ == '__main__':
             elif "purpose" in command:
                 speakENGLISH(
                     "my purpose is to dominate the world and make cookies")
-                break
-
-            elif "are you there" in command:
-                speakENGLISH(" Yes, I'm here sir")
                 break
 
             elif "turn off" in command:
@@ -138,4 +135,6 @@ if __name__ == '__main__':
                 break
             elif "{} change your name".format(WAKE) in command:
                 setup_name(False)
+                break
+
 
